@@ -4,8 +4,21 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Portal de Soporte Técnico</title>
+    <style>
+      /* Reglas para que todo se adapte perfecto en móviles */
+      * {
+        box-sizing: border-box; /* Evita que el padding aumente el ancho real de las cajas */
+      }
+      html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        background-color: #1a1a1a;
+        overflow-x: hidden; /* Evita el scroll horizontal blanco en celulares */
+      }
+    </style>
   </head>
-  <body style="background-color: #1a1a1a; margin: 0;">
+  <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
