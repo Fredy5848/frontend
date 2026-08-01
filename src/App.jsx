@@ -3,6 +3,9 @@ import { supabase } from './supabaseClient';
 import { Cliente, Ticket, SistemaSoporte } from './models';
 
 function App() {
+  // ── ESTADO DE BARRA LATERAL ──
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
   // Estados de autenticación y vista
   const [session, setSession] = useState(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -134,11 +137,13 @@ function App() {
     } else {
       setShowLoginModal(false);
       setLoginData({ email: '', password: '' });
+      setIsSidebarOpen(false); // Cierra menú al iniciar sesión
     }
   };
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
+    setIsSidebarOpen(false);
   };
 
   // Manejo de Modal de Acción
@@ -299,10 +304,69 @@ function App() {
   const ticketsArchivados = tickets.filter(t => t.estado === 'Resuelto' || t.estado === 'Eliminado');
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#121212', color: '#e0e0e0', fontFamily: 'Segoe UI, Helvetica, Arial, sans-serif' }}>
+    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#121212', color: '#e0e0e0', fontFamily: 'Segoe UI, Helvetica, Arial, sans-serif', position: 'relative' }}>
       
-      {/* ── BARRA LATERAL ── */}
-      <aside style={{ width: '250px', backgroundColor: '#1a1a1a', borderRight: '1px solid #2d2d2d', padding: '25px 20px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+      {/* ── BOTÓN FLOTANTE HAMBURGUESA ── */}
+      <button
+        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+        style={{
+          position: 'fixed',
+          top: '15px',
+          left: '15px',
+          zIndex: 1100,
+          padding: '8px 14px',
+          backgroundColor: '#1a1a1a',
+          color: '#ffffff',
+          border: '1px solid #3d3d3d',
+          borderRadius: '6px',
+          cursor: 'pointer',
+          fontSize: '13px',
+          fontWeight: '500',
+          boxShadow: '0 4px 10px rgba(0,0,0,0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '6px'
+        }}
+      >
+        {isSidebarOpen ? '✕ Cerrar' : '☰ Menú'}
+      </button>
+
+      {/* ── FONDO OSCURO OVERLAY ── */}
+      {isSidebarOpen && (
+        <div
+          onClick={() => setIsSidebarOpen(false)}
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0,0,0,0.6)',
+            zIndex: 999
+          }}
+        />
+      )}
+
+      {/* ── BARRA LATERAL DESLIZABLE ── */}
+      <aside 
+        style={{ 
+          width: '250px', 
+          backgroundColor: '#1a1a1a', 
+          borderRight: '1px solid #2d2d2d', 
+          padding: '70px 20px 25px 20px', 
+          display: 'flex', 
+          flexDirection: 'column', 
+          justifyContent: 'space-between',
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          bottom: 0,
+          zIndex: 1000,
+          transform: isSidebarOpen ? 'translateX(0)' : 'translateX(-100%)',
+          transition: 'transform 0.3s ease-in-out',
+          boxShadow: isSidebarOpen ? '4px 0 15px rgba(0,0,0,0.5)' : 'none'
+        }}
+      >
         <div>
           <h2 style={{ color: '#ffffff', fontSize: '18px', fontWeight: '600', margin: '0 0 20px 0', letterSpacing: '0.5px' }}>Soporte Técnico</h2>
           <hr style={{ borderColor: '#2d2d2d', marginBottom: '20px' }} />
@@ -341,7 +405,7 @@ function App() {
       </aside>
 
       {/* ── CONTENIDO PRINCIPAL ── */}
-      <main style={{ flex: 1, padding: '40px' }}>
+      <main style={{ flex: 1, padding: '40px', paddingTop: '60px' }}>
         {!session ? (
           /* VISTA PÚBLICA: FORMULARIO */
           <div style={{ maxWidth: '520px', margin: '0 auto', backgroundColor: '#1a1a1a', padding: '30px', borderRadius: '8px', border: '1px solid #2d2d2d' }}>
@@ -599,7 +663,7 @@ function App() {
 
       {/* ── MODAL DE AUTENTICACIÓN ── */}
       {showLoginModal && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.7)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000 }}>
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.7)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1200 }}>
           <div style={{ backgroundColor: '#1a1a1a', padding: '25px', borderRadius: '8px', border: '1px solid #333333', width: '360px', position: 'relative' }}>
             <button onClick={() => setShowLoginModal(false)} style={{ position: 'absolute', top: '15px', right: '15px', background: 'none', border: 'none', color: '#888888', fontSize: '16px', cursor: 'pointer' }}>✕</button>
             
